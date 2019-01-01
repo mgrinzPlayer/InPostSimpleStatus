@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>InPost Simple Status</title>
+  </head>
+  <body>
+    InPost Simple Status
+    <div id="status"></div>
+    <script>
+      function translateStatusToTitleAndDescritption(status,array) {
+        for (var i=0;i<array.length;i++) {
+          if (array[i].name == status) {
+            return [array[i].title,array[i].description]
+          }
+        }
+      }
+
+      function getUrlVars() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+            vars[key] = value;
+        });
+        return vars;
+      }
+
+      var idPaczki = getUrlVars()["id"];
+      var text = "Dodaj parametr do adresu strony. Na przykład:<BR>id={numer przesyłki}"
+
+      if ( idPaczki ) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", "https://api-shipx-pl.easypack24.net/v1/tracking/"+idPaczki, false );
+        xmlHttp.send( null );
+        var tracking = xmlHttp.responseText;
+
+        xmlHttp.open( "GET", "https://api-shipx-pl.easypack24.net/v1/statuses", false );
+        xmlHttp.send( null );
+        var statusy = xmlHttp.responseText;
+
+        var objTracking = JSON.parse(tracking);
+        var objStatusy = JSON.parse(statusy);
+        var arrayStatusy = objStatusy.items;
+        var arrayTrackingDetails = objTracking.tracking_details;
+
+        text = "ID paczki to: " + idPaczki + "<br>";
+
+        for (var i=0;i<arrayTrackingDetails.length;i++) {
+          var status = arrayTrackingDetails[i].status;
+          var czas = new Date(arrayTrackingDetails[i].datetime).toLocaleString('pl-PL');
+          var info = translateStatusToTitleAndDescritption(status,arrayStatusy);
+          text = text + "<br><br><b>" + czas + "</b>: " + info[0] + " " + info[1];
+        }
+      }
+
+      document.getElementById("status").innerHTML = text;
+    </script>
+  </body>
+
+</html>
