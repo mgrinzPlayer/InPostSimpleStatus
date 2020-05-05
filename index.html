@@ -2,6 +2,10 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>InPost Simple Status</title>
+    <style>
+      body {font-size:40px}
+      p {font-size:70%}
+    </style>
   </head>
   <body>
     InPost Simple Status
@@ -47,10 +51,9 @@
           var status = arrayTrackingDetails[i].status;
           var czas = new Date(arrayTrackingDetails[i].datetime).toLocaleString('pl-PL');
           var info = translateStatusToTitleAndDescritption(status,arrayStatusy);
-          text = text + "<br><br><b>" + czas + "</b>: " + info[0] + " " + info[1];
+          text = text + "<p><strong>" + czas + ":</strong><br>" + info[0] + "<br>" + info[1] + "</p>";
         }
       }
-
       document.getElementById("status").innerHTML = text;
     </script>
   </body>
